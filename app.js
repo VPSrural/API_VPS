@@ -1,23 +1,27 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 require('dotenv').config()
+const bodyParser = require('body-parser')
 const periodicFunc = require('./periodicFunctionSQL')
 
-var app = express();
+const app = express();
 
 //rotas
 // var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var defaultt = require('./routes/default')
+var financeiro = require('./routes/financeiro');
 
 // midllewares
 app.use(logger('dev'));
 app.use(express.json());
+app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 
 /*
@@ -25,11 +29,16 @@ app.use(express.static(path.join(__dirname, 'public')));
  */
 setInterval(async function (){
   periodicFunc.conexaoDB()
-}, 5000);
+}, 300000); // executa a cada uma hora
 
 
-// app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// default
+app.use('/api/v1', defaultt);
+
+
+//encaminhando para rotas
+app.use('/api/v1', financeiro);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -44,7 +53,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.send('error');
 });
 
 

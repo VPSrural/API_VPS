@@ -1,4 +1,6 @@
-const sql = require("mssql")
+const sql = require("mssql");
+const connection = require("./models/connetion");
+const contasPagarModel = require("./models/financeiro/contas_pagar");
 
 module.exports.conexaoDB = async () => {
   try {
@@ -84,7 +86,44 @@ module.exports.conexaoDB = async () => {
     );
 
     console.log("Consultas terminadas");
+
+    // insertion mongodb atlas function
+    insertingQUERY_CONTAS_PAGAR(QUERY_CONTAS_PAGAR);
   } catch (err) {
     console.log(err);
   }
 };
+
+// modo de acesso dos objetos query.recordset[index].valor
+
+module.exports.getCONTAS_PAGAR = insertingQUERY_CONTAS_PAGAR = async (
+  query
+) => {
+  let dataToInsert = [];
+
+  if (connection()) {
+    query.recordset.map((item, index)=>{
+      dataToInsert.push({
+        Valor: item.Valor,
+        Data_de_vencimento: item.Data_de_vencimento,
+        Atividade: item.Atividade,
+        Nome: item.NOME,
+        Financiamento: item.Financiamento,
+        Situacao_pagar: item.Situacao_Pagar
+      })
+    })
+
+    dataToInsert.map((item, index)=>{
+      var contasPagarInserting = new contasPagarModel(item)
+    
+      contasPagarInserting.save()
+  
+      console.log(`inseriu item ${index}`)
+    })
+
+
+  } else {
+    console.log("erro no mongodb");
+  }
+};
+
