@@ -8,6 +8,11 @@ const contaReceber = mongoose.Schema({
     Cliente: String,
     Situacao: String,
     Valor_pago: Number
+},
+{
+    toJSON: {
+        getters: true
+    }
 })
 
 const contaReceberModel = mongoose.model('Contarecebe', contaReceber)
