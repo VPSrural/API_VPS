@@ -22,6 +22,11 @@ const contaCorrente = mongoose.Schema({
       VLR_CRE: Number,
       VLR_DEB: Number,
       ID_OPR_RECEBIMENTO: Number,
+},
+{
+      toJSON: {
+          getters: true
+      }
 })
 
 const contaCorrenteModel = mongoose.model('Contacorrente', contaCorrente)
