@@ -11,8 +11,8 @@ const app = express();
 
 //rotas
 // var indexRouter = require('./routes/index');
-var defaultt = require('./routes/default')
-var financeiro = require('./routes/financeiro');
+const defaultt = require('./routes/default')
+const financeiro = require('./routes/financeiro');
 
 // midllewares
 app.use(logger('dev'));
@@ -23,13 +23,16 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-
 /*
  * Funcao para buscar os dados do sql server
  */
-setInterval(async function (){
-  periodicFunc.conexaoDB()
-}, 300000); // executa a cada uma hora
+// setInterval(async function (){
+
+//   await 
+  
+// }, 3000000); // executa a cada uma hora
+
+periodicFunc.conexaoDB()
 
 
 // default

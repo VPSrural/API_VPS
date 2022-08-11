@@ -1,6 +1,13 @@
 const sql = require("mssql");
 const connection = require("./models/connetion");
+
+//! quando instancia um model ele vira um documento
+
+// financeiro
 const contasPagarModel = require("./models/financeiro/contas_pagar");
+const financiamentoModel = require("./models/financeiro/financiamento");
+const contaCorrenteModel = require("./models/financeiro/conta_corrente");
+const contaReceberModel =  require("./models/financeiro/contas_receber")
 
 module.exports.conexaoDB = async () => {
   try {
@@ -8,7 +15,7 @@ module.exports.conexaoDB = async () => {
       "Data Source=NERI\\SQL2019;Database=LUCIANE;Encrypt=False;Integrated Security=False;User ID=sa;Password=112658"
     );
 
-    console.log("connected");
+    console.log("connected to sql server");
 
     // consultando as views e pegando seus dados
     const QUERY_BALANCO_PATRIMONIAL_ATIVOS = await sql.query(
@@ -85,45 +92,94 @@ module.exports.conexaoDB = async () => {
       "select * from QUERY_TABELA_DE_CUSTO"
     );
 
-    console.log("Consultas terminadas");
+    console.log("Consultas sql server terminada");
 
-    // insertion mongodb atlas function
-    insertingQUERY_CONTAS_PAGAR(QUERY_CONTAS_PAGAR);
+    // insertion mongodb atlas functions
+
+    //! funcionando
+    // insertingQUERY_CONTAS_PAGAR(QUERY_CONTAS_PAGAR);
+
+    //! funcionando
+    // insertingQUERY_FINANCIAMENTOS(QUERY_FINANCIAMENTOS)
+
+    //! funcionando
+    // insertingQUERY_CONTA_CORRENTE(QUERY_CONTA_CORRENTE);
+
+    //! funcionando
+    // insertingQUERY_CONTAS_RECEBER(QUERY_CONTAS_RECEBER)
+
   } catch (err) {
     console.log(err);
   }
 };
 
 // modo de acesso dos objetos query.recordset[index].valor
-
-module.exports.getCONTAS_PAGAR = insertingQUERY_CONTAS_PAGAR = async (
-  query
-) => {
-  let dataToInsert = [];
-
+//! funcionando
+const insertingQUERY_CONTAS_PAGAR = async (query) => {
   if (connection()) {
-    query.recordset.map((item, index)=>{
-      dataToInsert.push({
-        Valor: item.Valor,
-        Data_de_vencimento: item.Data_de_vencimento,
-        Atividade: item.Atividade,
-        Nome: item.NOME,
-        Financiamento: item.Financiamento,
-        Situacao_pagar: item.Situacao_Pagar
-      })
-    })
+    const dataToInsert = query.recordset;
 
-    dataToInsert.map((item, index)=>{
-      var contasPagarInserting = new contasPagarModel(item)
-    
-      contasPagarInserting.save()
-  
-      console.log(`inseriu item ${index}`)
-    })
-
-
+    contasPagarModel.insertMany(dataToInsert, (err, docs) => {
+      if (!err) {
+        console.log("contar_pagar atualizado com sucesso");
+      } else {
+        console.log(err);
+      }
+    });
   } else {
     console.log("erro no mongodb");
   }
 };
 
+//! funcionando
+const insertingQUERY_FINANCIAMENTOS = async (query) => {
+  if (connection()) {
+    const dataToInsert = query.recordset;
+
+    financiamentoModel.insertMany(dataToInsert, (err, docs) => {
+      if (!err) {
+        console.log("financiamento atualizada com sucesso");
+      } else {
+        console.log(err);
+      }
+    });
+  } else {
+    console.log("erro no mongodb");
+  }
+};
+
+//! funcionando
+const insertingQUERY_CONTA_CORRENTE = async (query) => {
+  if (connection()) {
+    const dataToInsert = query.recordset;
+
+    contaCorrenteModel.insertMany(dataToInsert, (err, docs) => {
+      if (!err) {
+        console.log("Conta_corrente atualizada com sucesso");
+      } else {
+        console.log(err);
+      }
+    });
+
+  } else {
+    
+  }
+};
+
+//! funcionando
+const insertingQUERY_CONTAS_RECEBER = async (query) => {
+  if(connection()){
+
+    const dataToInsert = query.recordset
+    contaReceberModel.insertMany(dataToInsert, (err, docs) => {
+      if(!err){
+        console.log("Conta_receber atualizada com sucesso");
+      }else{
+        console.log(err);
+      }
+    })
+
+  }else{
+    console.log("erro no mongodb");
+  }
+}
