@@ -93,7 +93,7 @@ module.exports.conexaoDB = async () => {
     );
 
     console.log("Consultas sql server terminada");
-
+    
     // insertion mongodb atlas functions
 
     //! funcionando
