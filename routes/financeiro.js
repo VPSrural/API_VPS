@@ -4,8 +4,12 @@ const controllerFin = require('../controllers/controllFinanceiro')
 
 /* GET rotasPagar. */
 router.get('/financeiro/contasPagar', controllerFin.gettingAllDataContasPagar);
+router.get('/financeiro/contasPagarTwenty', controllerFin.gettingContasPagarByData)
+
 router.get('/financeiro/financiamento', controllerFin.gettingAllDataFinanciamento)
+
 router.get('/financeiro/contaCorrente', controllerFin.gettingAllDataContaCorrente)
+
 router.get('/financeiro/contaReceber', controllerFin.gettingAllDataContaReceber)
 
 module.exports = router;

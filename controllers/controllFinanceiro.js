@@ -25,6 +25,21 @@ module.exports.gettingAllDataContasPagar = (req, res, next) => {
     
 }
 
+//constas a pagar ordenada por data
+module.exports.gettingContasPagarByData = async (req, res, next) => {
+    res.setHeader("Content-Type", "application/json");
+    if(db()){
+        try{
+            const result = await contasPagarModel.find({}).sort({Data_de_vencimento: -1}).where("Situacao_Pagar == Aberto").limit(20).exec();
+            res.status(200).send(result)
+        }catch(err){
+            res.send(err)
+            res.status(404).send("Database nao encontrada")
+        }
+    }
+}
+
+
 module.exports.gettingAllDataFinanciamento = (req, res, next) => {
     res.setHeader("content-type", "application/json")
     if(db()){

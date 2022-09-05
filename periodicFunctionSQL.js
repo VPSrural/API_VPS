@@ -12,7 +12,7 @@ const contaReceberModel =  require("./models/financeiro/contas_receber")
 module.exports.conexaoDB = async () => {
   try {
     await sql.connect(
-      "Data Source=NERI\\SQL2019;Database=LUCIANE;Encrypt=False;Integrated Security=False;User ID=sa;Password=112658"
+      "Data Source=DEV04\\SQL2019;Database=LUCIANE;Encrypt=False;Integrated Security=False;User ID=sa;Password=112658"
     );
 
     console.log("connected to sql server");
