@@ -30,7 +30,22 @@ module.exports.gettingContasPagarByData = async (req, res, next) => {
     res.setHeader("Content-Type", "application/json");
     if(db()){
         try{
-            const result = await contasPagarModel.find({}).sort({Data_de_vencimento: -1}).where("Situacao_Pagar == Aberto").limit(20).exec();
+            const dateNow = new Date();
+            // const gettingDay = dateNow.getUTCDate();
+            //COMEÇA EM 0 OS MESES
+            const gettingDay = dateNow.getDay();
+            let getNextMonth = dateNow.getMonth();
+            let gettingYear = dateNow.getFullYear();
+            if(getNextMonth == 13){
+                getNextMonth = 1;
+                gettingYear = gettingYear + 1   
+            }
+
+            const result = await contasPagarModel.find({$and: 
+                [
+                    {Data_de_vencimento: {$gte: dateNow}},
+                    {Data_de_vencimento: {$lte: new Date(`${getNextMonth+2}-${gettingDay}-${gettingYear}`)}}
+                ]}).sort({Data_de_vencimento: -1}).where("Situacao_Pagar == Aberto").limit(20).exec();
             res.status(200).send(result)
         }catch(err){
             res.send(err)
