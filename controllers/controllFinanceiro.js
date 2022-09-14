@@ -54,6 +54,108 @@ module.exports.gettingContasPagarByData = async (req, res, next) => {
     }
 }
 
+// filtering data with URL params to filter in Application
+module.exports.filteringContasPagar = async (req, res) => {
+    res.setHeader("Content-Type", "application/json");
+
+    if(db()){
+        try{
+            const atividade = req.query.atv;
+            const initialDate = req.query.iniDate;
+            const finalDate = req.query.finalDate;
+            const fornecedor = req.query.nome;
+            console.log(atividade, initialDate, finalDate, fornecedor)
+            if(atividade && initialDate && finalDate && fornecedor){
+
+                
+                const resultAll = await contasPagarModel
+                .find({$and: [
+                    {Atividade: {$eq: atividade}},
+                    {NOME: {$eq: fornecedor}},
+                    {Data_de_vencimento: {$gte: initialDate}},
+                    {Data_de_vencimento: {$lte: new Date(`${finalDate}`)}}
+                ]})
+                .where("Situacao_Pagar == Aberto")
+                .sort({Data_de_vencimento: -1})
+                .exec();
+                res.status(200).send(resultAll)
+
+
+            }
+            if(atividade && initialDate && finalDate && !fornecedor){
+
+                const resultAtvIniFinal = await contasPagarModel
+                .find({$and: [
+                    {Atividade: {$eq: atividade}},
+                    {Data_de_vencimento: {$gte: initialDate}},
+                    {Data_de_vencimento: {$lte: new Date(`${finalDate}`)}}
+                ]})
+                .where("Situacao_Pagar == Aberto")
+                .sort({Data_de_vencimento: -1})
+                .exec();
+                res.status(200).send(resultAtvIniFinal)
+
+            }
+            if(finalDate && initialDate && !atividade && !fornecedor){
+                
+                const resultBetweenDates = await contasPagarModel
+                .find({$and: [
+                    {Data_de_vencimento: {$gte: new Date(initialDate)}},
+                    {Data_de_vencimento: {$lte: new Date(`${finalDate}`)}}
+                ]})
+                .where("Situacao_Pagar == Aberto")
+                .sort({Data_de_vencimento: -1})
+                .exec();
+                res.status(200).send(resultBetweenDates)
+
+            }
+            if(atividade && !initialDate && !finalDate && !fornecedor){
+
+                const resultAtv = await contasPagarModel
+                .find({Atividade: {$eq: atividade}})
+                .where("Situacao_Pagar == Aberto")
+                .exec();
+                res.status(200).send(resultAtv)
+
+            }
+            if(finalDate &&!atividade && !initialDate && !fornecedor){
+
+                const currentDate = new Date(); 
+                
+                const resultFinalDate = await contasPagarModel
+                .find({$and: [
+                    {Data_de_vencimento: {$gte: currentDate}},
+                    {Data_de_vencimento: {$lte: new Date(`${finalDate}`)}}
+                ]})
+                .where("Situacao_Pagar == Aberto")
+                .sort({Data_de_vencimento: -1})
+                .exec();
+                res.status(200).send(resultFinalDate)
+
+
+            }
+            if(fornecedor && !finalDate && !atividade && !initialDate){
+                                
+                const resultFinalDate = await contasPagarModel
+                .find({$and: [
+                    {NOME: {$eq: fornecedor}},
+                ]})
+                .where("Situacao_Pagar == Aberto")
+                .sort({Data_de_vencimento: -1})
+                .exec();
+                res.status(200).send(resultFinalDate)
+
+            }
+
+            
+            
+        }catch(err){
+            res.send(err);
+            res.status(404).send("Database nao encontrada");
+        }
+    }
+}
+
 
 module.exports.gettingAllDataFinanciamento = (req, res, next) => {
     res.setHeader("content-type", "application/json")
