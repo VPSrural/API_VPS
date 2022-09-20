@@ -4,7 +4,7 @@ const controllerFin = require('../controllers/controllFinanceiro')
 
 /* GET rotasPagar. */
 /* CONTAS A PAGAR */
-router.get('/financeiro/contasPagar', controllerFin.gettingAllDataContasPagar);
+router.get('/financeiro/contasPagar', controllerFin.gettingAllDataContasPagar)
 router.get('/financeiro/contasPagarTwenty', controllerFin.gettingContasPagarByData)
 router.get('/financeiro/contasPagarFiltered', controllerFin.filteringContasPagar)
 

@@ -156,7 +156,6 @@ module.exports.filteringContasPagar = async (req, res) => {
     }
 }
 
-
 module.exports.gettingAllDataFinanciamento = (req, res, next) => {
     res.setHeader("content-type", "application/json")
     if(db()){
@@ -175,6 +174,9 @@ module.exports.gettingAllDataFinanciamento = (req, res, next) => {
     }
 }
 
+
+
+
 module.exports.gettingAllDataContaCorrente = (req, res, next) => {
     res.setHeader("content-type", "application/json")
     if(db()){
@@ -191,6 +193,8 @@ module.exports.gettingAllDataContaCorrente = (req, res, next) => {
     }
 }
 
+
+// contas a receber queries
 module.exports.gettingAllDataContaReceber = (req, res, next) => {
     res.setHeader("content-type", "application/json")
     if(db()){
@@ -210,6 +214,37 @@ module.exports.gettingAllDataContaReceber = (req, res, next) => {
 
     }else{
         res.status(404).send("Database nao encontrada")
-
     }
 }
+
+// module.exports.gettingContaReceberByArray =  (req, res, next) => {
+//     res.setHeader("content-type", "application/json");
+//     if(db()){
+//         try{
+
+//             const gettingArray = req.query.atividades;
+//             const arrayOfActivities = gettingArray.split(',');
+
+//             const dataFromDB = arrayOfActivities.map((item, index)=>{
+//                 contaReceberModel.find({$and: [
+//                     {Atividade: item},
+//                     {Situacao: "Em aberto"}
+//                 ]})
+//                 .sort({Data_de_vencimento: -1})
+//                 .exec()
+//                 .then(data=>{
+//                     console.log(data)
+//                 })
+//             })
+
+//             res.send({"guizaodo":"zap"})
+            
+//         }catch(err){
+
+//             res.status(400).json({error: err})
+
+//         }
+//     }else{
+//         res.status(404).send("Database nao encontrada");
+//     }
+// }
