@@ -63,7 +63,7 @@ module.exports.filteringContasPagar = async (req, res) => {
             const atividade = req.query.atv;
             const initialDate = req.query.iniDate;
             const finalDate = req.query.finalDate;
-            const fornecedor = req.query.nome;
+            const fornecedor = req.query.cliente;
             console.log(atividade, initialDate, finalDate, fornecedor)
             if(atividade && initialDate && finalDate && fornecedor){
 
@@ -71,7 +71,7 @@ module.exports.filteringContasPagar = async (req, res) => {
                 const resultAll = await contasPagarModel
                 .find({$and: [
                     {Atividade: {$eq: atividade}},
-                    {NOME: {$eq: fornecedor}},
+                    {cliente: {$eq: fornecedor}},
                     {Data_de_vencimento: {$gte: initialDate}},
                     {Data_de_vencimento: {$lte: new Date(`${finalDate}`)}}
                 ]})
@@ -138,7 +138,7 @@ module.exports.filteringContasPagar = async (req, res) => {
                                 
                 const resultFinalDate = await contasPagarModel
                 .find({$and: [
-                    {NOME: {$eq: fornecedor}},
+                    {cliente: {$eq: fornecedor}},
                 ]})
                 .where("Situacao_Pagar == Aberto")
                 .sort({Data_de_vencimento: -1})
@@ -211,6 +211,115 @@ module.exports.gettingAllDataContaReceber = (req, res, next) => {
             res.status(400).json({error: err})
 
         }
+
+    }else{
+        res.status(404).send("Database nao encontrada")
+    }
+}
+
+// filtering contas a receber
+module.exports.filteringContasReceber = async (req, res) => {
+
+    res.setHeader("content-type", "application/json")
+    if(db()){
+        try{
+
+            const atividade = req.query.atv;
+            const initialDate = req.query.iniDate;
+            const finalDate = req.query.finalDate;
+            const cliente = req.query.cliente;
+
+            console.log(atividade+" "+initialDate+" "+finalDate+" "+cliente)
+
+            if(atividade && initialDate && finalDate && cliente){
+
+                const resultAll = await contaReceberModel
+                .find({$and: [
+                    {Atividade: {$eq: atividade}},
+                    {Cliente: {$eq: cliente}},
+                    {Data_de_vencimento: {$gte: new Date(initialDate)}},
+                    {Data_de_vencimento: {$lte: new Date(finalDate)}}
+                ]})
+                .where("Situacao_Pagar == Em aberto")
+                .sort({Data_de_vencimento: -1})
+                .exec();
+                res.status(200).send(resultAll)
+
+
+            }
+            if(atividade && initialDate && finalDate && !cliente){
+
+                const resultAtvIniFinal = await contaReceberModel
+                .find({$and: [
+                    {Atividade: {$eq: atividade}},
+                    {Data_de_vencimento: {$gte: initialDate}},
+                    {Data_de_vencimento: {$lte: new Date(`${finalDate}`)}}
+                ]})
+                .where("Situacao_Pagar == Em aberto")
+                .sort({Data_de_vencimento: -1})
+                .exec();
+                res.status(200).send(resultAtvIniFinal)
+
+            }
+            if(finalDate && initialDate && !atividade && !cliente){
+                
+                const resultBetweenDates = await contaReceberModel
+                .find({$and: [
+                    {Data_de_vencimento: {$gte: new Date(initialDate)}},
+                    {Data_de_vencimento: {$lte: new Date(`${finalDate}`)}}
+                ]})
+                .where("Situacao_Pagar == Em aberto")
+                .sort({Data_de_vencimento: -1})
+                .exec();
+                res.status(200).send(resultBetweenDates)
+
+            }
+            if(atividade && !initialDate && !finalDate && !cliente){
+
+                const resultAtv = await contaReceberModel
+                .find({Atividade: {$eq: atividade}})
+                .where("Situacao_Pagar == Em aberto")
+                .exec();
+                res.status(200).send(resultAtv)
+
+            }
+            if(finalDate &&!atividade && !initialDate && !cliente){
+
+                const currentDate = new Date(); 
+                
+                const resultFinalDate = await contaReceberModel
+                .find({$and: [
+                    {Data_de_vencimento: {$gte: currentDate}},
+                    {Data_de_vencimento: {$lte: new Date(`${finalDate}`)}}
+                ]})
+                .where("Situacao_Pagar == Em aberto")
+                .sort({Data_de_vencimento: -1})
+                .exec();
+                res.status(200).send(resultFinalDate)
+
+
+            }
+            if(cliente && !finalDate && !atividade && !initialDate){
+                                
+                const resultFinalDate = await contaReceberModel
+                .find({$and: [
+                    {Cliente: {$eq: cliente}},
+                ]})
+                .where("Situacao_Pagar == Em aberto")
+                .sort({Data_de_vencimento: -1})
+                .exec();
+                res.status(200).send(resultFinalDate)
+
+            }
+
+
+        }catch(err){
+
+            res.send(err)
+            res.status(400).json({error: err})
+
+        }
+        
 
     }else{
         res.status(404).send("Database nao encontrada")

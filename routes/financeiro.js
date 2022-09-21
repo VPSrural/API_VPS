@@ -16,5 +16,6 @@ router.get('/financeiro/contaCorrente', controllerFin.gettingAllDataContaCorrent
 
 /* CONTAS A RECEBER */
 router.get('/financeiro/contaReceber', controllerFin.gettingAllDataContaReceber)
+router.get('/financeiro/contasReceberFiltered', controllerFin.filteringContasReceber)
 
 module.exports = router;
