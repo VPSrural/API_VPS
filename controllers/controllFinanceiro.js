@@ -31,21 +31,15 @@ module.exports.gettingContasPagarByData = async (req, res, next) => {
     if(db()){
         try{
             const dateNow = new Date();
-            // const gettingDay = dateNow.getUTCDate();
-            //COMEÇA EM 0 OS MESES
-            const gettingDay = dateNow.getDay();
-            let getNextMonth = dateNow.getMonth();
-            let gettingYear = dateNow.getFullYear();
-            if(getNextMonth == 13){
-                getNextMonth = 1;
-                gettingYear = gettingYear + 1   
-            }
-
+            
             const result = await contasPagarModel.find({$and: 
                 [
                     {Data_de_vencimento: {$gte: dateNow}},
-                    {Data_de_vencimento: {$lte: new Date(`${getNextMonth+2}-${gettingDay}-${gettingYear}`)}}
-                ]}).sort({Data_de_vencimento: -1}).where("Situacao_Pagar == Aberto").limit(20).exec();
+
+                ]}).sort({Data_de_vencimento: 1})
+                .where("Situacao_Pagar == Aberto")
+                .limit(10).exec();
+
             res.status(200).send(result)
         }catch(err){
             res.send(err)
@@ -75,7 +69,7 @@ module.exports.filteringContasPagar = async (req, res) => {
                     {Data_de_vencimento: {$gte: initialDate}},
                     {Data_de_vencimento: {$lte: new Date(`${finalDate}`)}}
                 ]})
-                .where("Situacao_Pagar == Aberto")
+                .where({Situacao_Pagar: "Aberto"})
                 .sort({Data_de_vencimento: -1})
                 .exec();
                 res.status(200).send(resultAll)
@@ -90,7 +84,7 @@ module.exports.filteringContasPagar = async (req, res) => {
                     {Data_de_vencimento: {$gte: initialDate}},
                     {Data_de_vencimento: {$lte: new Date(`${finalDate}`)}}
                 ]})
-                .where("Situacao_Pagar == Aberto")
+                .where({Situacao_Pagar: "Aberto"})
                 .sort({Data_de_vencimento: -1})
                 .exec();
                 res.status(200).send(resultAtvIniFinal)
@@ -103,7 +97,7 @@ module.exports.filteringContasPagar = async (req, res) => {
                     {Data_de_vencimento: {$gte: new Date(initialDate)}},
                     {Data_de_vencimento: {$lte: new Date(`${finalDate}`)}}
                 ]})
-                .where("Situacao_Pagar == Aberto")
+                .where({Situacao_Pagar: "Aberto"})
                 .sort({Data_de_vencimento: -1})
                 .exec();
                 res.status(200).send(resultBetweenDates)
@@ -113,7 +107,7 @@ module.exports.filteringContasPagar = async (req, res) => {
 
                 const resultAtv = await contasPagarModel
                 .find({Atividade: {$eq: atividade}})
-                .where("Situacao_Pagar == Aberto")
+                .where({Situacao_Pagar: "Aberto"})
                 .exec();
                 res.status(200).send(resultAtv)
 
@@ -127,7 +121,7 @@ module.exports.filteringContasPagar = async (req, res) => {
                     {Data_de_vencimento: {$gte: currentDate}},
                     {Data_de_vencimento: {$lte: new Date(`${finalDate}`)}}
                 ]})
-                .where("Situacao_Pagar == Aberto")
+                .where({Situacao_Pagar: "Aberto"})
                 .sort({Data_de_vencimento: -1})
                 .exec();
                 res.status(200).send(resultFinalDate)
@@ -140,7 +134,7 @@ module.exports.filteringContasPagar = async (req, res) => {
                 .find({$and: [
                     {cliente: {$eq: fornecedor}},
                 ]})
-                .where("Situacao_Pagar == Aberto")
+                .where({Situacao_Pagar: "Aberto"})
                 .sort({Data_de_vencimento: -1})
                 .exec();
                 res.status(200).send(resultFinalDate)
@@ -231,7 +225,7 @@ module.exports.filteringContasReceber = async (req, res) => {
 
             console.log(atividade+" "+initialDate+" "+finalDate+" "+cliente)
 
-            if(atividade && initialDate && finalDate && cliente){
+            if(atividade && initialDate && finalDate && cliente){//!OK
 
                 const resultAll = await contaReceberModel
                 .find({$and: [
@@ -240,50 +234,50 @@ module.exports.filteringContasReceber = async (req, res) => {
                     {Data_de_vencimento: {$gte: new Date(initialDate)}},
                     {Data_de_vencimento: {$lte: new Date(finalDate)}}
                 ]})
-                .where("Situacao_Pagar == Em aberto")
+                .where({Situacao: "Em aberto"})
                 .sort({Data_de_vencimento: -1})
-                .exec();
+                .exec()
+
                 res.status(200).send(resultAll)
 
-
             }
-            if(atividade && initialDate && finalDate && !cliente){
+            if(atividade && initialDate && finalDate && !cliente){//!OK
 
                 const resultAtvIniFinal = await contaReceberModel
                 .find({$and: [
                     {Atividade: {$eq: atividade}},
-                    {Data_de_vencimento: {$gte: initialDate}},
+                    {Data_de_vencimento: {$gte: new Date(initialDate)}},
                     {Data_de_vencimento: {$lte: new Date(`${finalDate}`)}}
                 ]})
-                .where("Situacao_Pagar == Em aberto")
+                .where({Situacao: "Em aberto"})
                 .sort({Data_de_vencimento: -1})
                 .exec();
                 res.status(200).send(resultAtvIniFinal)
 
             }
-            if(finalDate && initialDate && !atividade && !cliente){
+            if(finalDate && initialDate && !atividade && !cliente){//!OK
                 
                 const resultBetweenDates = await contaReceberModel
                 .find({$and: [
                     {Data_de_vencimento: {$gte: new Date(initialDate)}},
                     {Data_de_vencimento: {$lte: new Date(`${finalDate}`)}}
                 ]})
-                .where("Situacao_Pagar == Em aberto")
+                .where({Situacao: "Em aberto"})
                 .sort({Data_de_vencimento: -1})
                 .exec();
                 res.status(200).send(resultBetweenDates)
 
             }
-            if(atividade && !initialDate && !finalDate && !cliente){
+            if(atividade && !initialDate && !finalDate && !cliente){//!OK
 
                 const resultAtv = await contaReceberModel
                 .find({Atividade: {$eq: atividade}})
-                .where("Situacao_Pagar == Em aberto")
+                .where({Situacao: "Em aberto"})
                 .exec();
                 res.status(200).send(resultAtv)
 
             }
-            if(finalDate &&!atividade && !initialDate && !cliente){
+            if(finalDate &&!atividade && !initialDate && !cliente){//!ok
 
                 const currentDate = new Date(); 
                 
@@ -292,20 +286,20 @@ module.exports.filteringContasReceber = async (req, res) => {
                     {Data_de_vencimento: {$gte: currentDate}},
                     {Data_de_vencimento: {$lte: new Date(`${finalDate}`)}}
                 ]})
-                .where("Situacao_Pagar == Em aberto")
+                .where({Situacao: "Em aberto"})
                 .sort({Data_de_vencimento: -1})
                 .exec();
                 res.status(200).send(resultFinalDate)
 
 
             }
-            if(cliente && !finalDate && !atividade && !initialDate){
+            if(cliente && !finalDate && !atividade && !initialDate){//!OK
                                 
                 const resultFinalDate = await contaReceberModel
                 .find({$and: [
                     {Cliente: {$eq: cliente}},
                 ]})
-                .where("Situacao_Pagar == Em aberto")
+                .where({Situacao: "Em aberto"})
                 .sort({Data_de_vencimento: -1})
                 .exec();
                 res.status(200).send(resultFinalDate)
