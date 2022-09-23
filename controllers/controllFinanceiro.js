@@ -183,6 +183,7 @@ module.exports.gettingContasReceberByTwenty = async (req, res, next) => {
             const result = await contaReceberModel
             .find({Data_de_vencimento: {$gte: currentDate}})
             .sort({Data_de_vencimento: -1})
+            .where({Situacao: "Em aberto"})
             .limit(10)
             .exec()
             
@@ -360,6 +361,15 @@ module.exports.filteringFinanciamento = async (req, res, next) => {
                 const result = await financiamentoModel.find({$and: [
                     {DT_VEN: {$gte: currentDate}},
                     {DT_VEN: {$lte: DT_VEN_F}},
+                ]})
+                .sort({DT_VEN: 1})
+                .exec()
+
+                res.status(200).send(result)
+            }
+            if(NOME && !DT_VEN && !DT_VEN_F){
+                const result = await financiamentoModel.find({$and: [
+                    {NOME: {$eq: NOME}},
                 ]})
                 .sort({DT_VEN: 1})
                 .exec()
