@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 mongoose.set('debug', true)
 
 const financiamento = mongoose.Schema({
-    DT_LAN: String,
+    DT_VEN: Date,
     NOME: String,
     TIPO_DOC: String,
     ValorPago: Number,

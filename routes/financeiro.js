@@ -8,14 +8,15 @@ router.get('/financeiro/contasPagar', controllerFin.gettingAllDataContasPagar)
 router.get('/financeiro/contasPagarTwenty', controllerFin.gettingContasPagarByData)
 router.get('/financeiro/contasPagarFiltered', controllerFin.filteringContasPagar)
 
-/* FINANCIAMENTO */
-router.get('/financeiro/financiamento', controllerFin.gettingAllDataFinanciamento)
-
-/* CONTA CORRENTE */
-router.get('/financeiro/contaCorrente', controllerFin.gettingAllDataContaCorrente)
-
 /* CONTAS A RECEBER */
 router.get('/financeiro/contaReceber', controllerFin.gettingAllDataContaReceber)
 router.get('/financeiro/contasReceberFiltered', controllerFin.filteringContasReceber)
+
+/* FINANCIAMENTO */
+router.get('/financeiro/financiamento', controllerFin.gettingAllDataFinanciamento)
+router.get('/financeiro/financiamentoFiltered', controllerFin.filteringFinanciamento)
+
+/* CONTA CORRENTE */
+router.get('/financeiro/contaCorrente', controllerFin.gettingAllDataContaCorrente)
 
 module.exports = router;

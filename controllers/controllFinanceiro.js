@@ -150,44 +150,6 @@ module.exports.filteringContasPagar = async (req, res) => {
     }
 }
 
-module.exports.gettingAllDataFinanciamento = (req, res, next) => {
-    res.setHeader("content-type", "application/json")
-    if(db()){
-
-        try{
-            financiamentoModel.find({}, (err, data)=>{
-                res.status(200).send(data)
-            })
-        }catch(err){
-            res.send(err)
-            res.status(400).json({error: err})
-        }
-        
-    }else{
-        res.status(404).send("Database nao encontrada")
-    }
-}
-
-
-
-
-module.exports.gettingAllDataContaCorrente = (req, res, next) => {
-    res.setHeader("content-type", "application/json")
-    if(db()){
-        try{
-            contaCorrenteModel.find({}, (err, data)=>{
-                res.status(200).send(data)
-            })
-        }catch(err){
-            res.send(err)
-            res.status(400).json({error: err})
-        }
-    }else{
-        res.status(404).send("Database nao encontrada")
-    }
-}
-
-
 // contas a receber queries
 module.exports.gettingAllDataContaReceber = (req, res, next) => {
     res.setHeader("content-type", "application/json")
@@ -222,8 +184,6 @@ module.exports.filteringContasReceber = async (req, res) => {
             const initialDate = req.query.iniDate;
             const finalDate = req.query.finalDate;
             const cliente = req.query.cliente;
-
-            console.log(atividade+" "+initialDate+" "+finalDate+" "+cliente)
 
             if(atividade && initialDate && finalDate && cliente){//!OK
 
@@ -320,34 +280,100 @@ module.exports.filteringContasReceber = async (req, res) => {
     }
 }
 
-// module.exports.gettingContaReceberByArray =  (req, res, next) => {
-//     res.setHeader("content-type", "application/json");
-//     if(db()){
-//         try{
+// financiamento
+module.exports.gettingAllDataFinanciamento = (req, res, next) => {
+    res.setHeader("content-type", "application/json")
+    if(db()){
 
-//             const gettingArray = req.query.atividades;
-//             const arrayOfActivities = gettingArray.split(',');
+        try{
+            financiamentoModel.find({}, (err, data)=>{
+                res.status(200).send(data)
+            })
+        }catch(err){
+            res.send(err)
+            res.status(400).json({error: err})
+        }
+        
+    }else{
+        res.status(404).send("Database nao encontrada")
+    }
+}
 
-//             const dataFromDB = arrayOfActivities.map((item, index)=>{
-//                 contaReceberModel.find({$and: [
-//                     {Atividade: item},
-//                     {Situacao: "Em aberto"}
-//                 ]})
-//                 .sort({Data_de_vencimento: -1})
-//                 .exec()
-//                 .then(data=>{
-//                     console.log(data)
-//                 })
-//             })
+// filtro financiamento
+module.exports.filteringFinanciamento = async (req, res, next) => {
+    res.setHeader("content-type", "application/json")
 
-//             res.send({"guizaodo":"zap"})
+    if(db()){
+        
+        try{
+            const DT_VEN = req.query.dtven;
+            const DT_VEN_F = req.query.dtvenf;
+            const NOME = req.query.nome;
+
             
-//         }catch(err){
+            if(DT_VEN && DT_VEN_F && NOME){
+                const result = await financiamentoModel.find({$and: [
+                    {NOME: {$eq: NOME}}, //equals
+                    {DT_VEN: {$gte: new Date(DT_VEN)}}, // greater than and equals
+                    {DT_VEN: {$lte: new Date(DT_VEN_F)}} // less than and equals
+                ]})
+                .sort({DT_VEN: 1})
+                .exec()
 
-//             res.status(400).json({error: err})
+                res.status(200).send(result)
+            }
+            if(DT_VEN && DT_VEN_F && !NOME){
+                const result = await financiamentoModel.find({$and: [
+                    {DT_VEN: {$gte: DT_VEN}},
+                    {DT_VEN: {$lte: DT_VEN_F}}
+                ]})
+                .sort({DT_VEN: 1})
 
-//         }
-//     }else{
-//         res.status(404).send("Database nao encontrada");
-//     }
-// }
+                res.status(200).send(result)
+            }
+            if(DT_VEN_F && !DT_VEN && !NOME){
+                const currentDate = new Date()
+
+                const result = await financiamentoModel.find({$and: [
+                    {DT_VEN: {$gte: currentDate}},
+                    {DT_VEN: {$lte: DT_VEN_F}},
+                ]})
+                .sort({DT_VEN: 1})
+                .exec()
+
+                res.status(200).send(result)
+            }
+            if(!DT_VEN && !DT_VEN_F && !NOME){
+                res.status(200).json({"warning": "Nenhum filtro encontrado"})
+            }
+
+
+        }catch(err){
+
+            res.send(err)
+            res.status(400).json({error: err})
+
+        }
+
+    }else{
+        res.status(404).send("Database nao encontrada")
+    }
+
+}
+
+
+module.exports.gettingAllDataContaCorrente = (req, res, next) => {
+    res.setHeader("content-type", "application/json")
+    if(db()){
+        try{
+            contaCorrenteModel.find({}, (err, data)=>{
+                res.status(200).send(data)
+            })
+        }catch(err){
+            res.send(err)
+            res.status(400).json({error: err})
+        }
+    }else{
+        res.status(404).send("Database nao encontrada")
+    }
+}
