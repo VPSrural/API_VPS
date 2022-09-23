@@ -10,6 +10,7 @@ router.get('/financeiro/contasPagarFiltered', controllerFin.filteringContasPagar
 
 /* CONTAS A RECEBER */
 router.get('/financeiro/contaReceber', controllerFin.gettingAllDataContaReceber)
+router.get('/financeiro/contasReceberTwenty', controllerFin.gettingContasReceberByTwenty)
 router.get('/financeiro/contasReceberFiltered', controllerFin.filteringContasReceber)
 
 /* FINANCIAMENTO */

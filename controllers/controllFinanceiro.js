@@ -173,6 +173,29 @@ module.exports.gettingAllDataContaReceber = (req, res, next) => {
     }
 }
 
+// conta receber 10 proximas
+module.exports.gettingContasReceberByTwenty = async (req, res, next) => {
+    res.setHeader("content-type", "application/json")
+    
+    if(db()){
+        const currentDate = new Date();
+        try{
+            const result = await contaReceberModel
+            .find({Data_de_vencimento: {$gte: currentDate}})
+            .sort({Data_de_vencimento: -1})
+            .limit(10)
+            .exec()
+            
+            res.status(200).send(result)
+        }catch(err){
+            res.status(400).json({error: err})
+        }
+
+    }else{
+        res.status(404).send("Database nao encontrada")
+    }
+}
+
 // filtering contas a receber
 module.exports.filteringContasReceber = async (req, res) => {
 
