@@ -7,7 +7,7 @@ const contaCorrente = mongoose.Schema({
       NDEBCRE: Number,
       DEB_CRE: String,
       ID_LANCBC: Number,
-      DT_LAN: String,
+      DT_LAN: Date,
       NVALOR: Number,
       NCHEQUE: String,
       NCONTA: String,

@@ -19,5 +19,6 @@ router.get('/financeiro/financiamentoFiltered', controllerFin.filteringFinanciam
 
 /* CONTA CORRENTE */
 router.get('/financeiro/contaCorrente', controllerFin.gettingAllDataContaCorrente)
+router.get('/financeiro/contaCorrenteFiltered', controllerFin.filteringContaCorrente)
 
 module.exports = router;

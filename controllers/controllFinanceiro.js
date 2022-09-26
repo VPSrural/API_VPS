@@ -58,8 +58,8 @@ module.exports.filteringContasPagar = async (req, res) => {
             const initialDate = req.query.iniDate;
             const finalDate = req.query.finalDate;
             const fornecedor = req.query.cliente;
-            console.log(atividade, initialDate, finalDate, fornecedor)
-            if(atividade && initialDate && finalDate && fornecedor){
+
+            if(atividade && initialDate && finalDate && fornecedor){//!ok
 
                 
                 const resultAll = await contasPagarModel
@@ -76,7 +76,7 @@ module.exports.filteringContasPagar = async (req, res) => {
 
 
             }
-            if(atividade && initialDate && finalDate && !fornecedor){
+            if(atividade && initialDate && finalDate && !fornecedor){//!ok
 
                 const resultAtvIniFinal = await contasPagarModel
                 .find({$and: [
@@ -90,7 +90,7 @@ module.exports.filteringContasPagar = async (req, res) => {
                 res.status(200).send(resultAtvIniFinal)
 
             }
-            if(finalDate && initialDate && !atividade && !fornecedor){
+            if(finalDate && initialDate && !atividade && !fornecedor){//!ok
                 
                 const resultBetweenDates = await contasPagarModel
                 .find({$and: [
@@ -103,7 +103,7 @@ module.exports.filteringContasPagar = async (req, res) => {
                 res.status(200).send(resultBetweenDates)
 
             }
-            if(atividade && !initialDate && !finalDate && !fornecedor){
+            if(atividade && !initialDate && !finalDate && !fornecedor){//!ok
 
                 const resultAtv = await contasPagarModel
                 .find({Atividade: {$eq: atividade}})
@@ -112,7 +112,7 @@ module.exports.filteringContasPagar = async (req, res) => {
                 res.status(200).send(resultAtv)
 
             }
-            if(finalDate &&!atividade && !initialDate && !fornecedor){
+            if(finalDate &&!atividade && !initialDate && !fornecedor){//!ok
 
                 const currentDate = new Date(); 
                 
@@ -128,7 +128,7 @@ module.exports.filteringContasPagar = async (req, res) => {
 
 
             }
-            if(fornecedor && !finalDate && !atividade && !initialDate){
+            if(fornecedor && !finalDate && !atividade && !initialDate){//!ok
                                 
                 const resultFinalDate = await contasPagarModel
                 .find({$and: [
@@ -335,7 +335,8 @@ module.exports.filteringFinanciamento = async (req, res, next) => {
             const NOME = req.query.nome;
 
             
-            if(DT_VEN && DT_VEN_F && NOME){
+            if(DT_VEN && DT_VEN_F && NOME){ //!ok
+
                 const result = await financiamentoModel.find({$and: [
                     {NOME: {$eq: NOME}}, //equals
                     {DT_VEN: {$gte: new Date(DT_VEN)}}, // greater than and equals
@@ -346,7 +347,8 @@ module.exports.filteringFinanciamento = async (req, res, next) => {
 
                 res.status(200).send(result)
             }
-            if(DT_VEN && DT_VEN_F && !NOME){
+            if(DT_VEN && DT_VEN_F && !NOME){ //!ok
+
                 const result = await financiamentoModel.find({$and: [
                     {DT_VEN: {$gte: DT_VEN}},
                     {DT_VEN: {$lte: DT_VEN_F}}
@@ -355,7 +357,7 @@ module.exports.filteringFinanciamento = async (req, res, next) => {
 
                 res.status(200).send(result)
             }
-            if(DT_VEN_F && !DT_VEN && !NOME){
+            if(DT_VEN_F && !DT_VEN && !NOME){ //!ok
                 const currentDate = new Date()
 
                 const result = await financiamentoModel.find({$and: [
@@ -367,7 +369,8 @@ module.exports.filteringFinanciamento = async (req, res, next) => {
 
                 res.status(200).send(result)
             }
-            if(NOME && !DT_VEN && !DT_VEN_F){
+            if(NOME && !DT_VEN && !DT_VEN_F){ //!ok
+
                 const result = await financiamentoModel.find({$and: [
                     {NOME: {$eq: NOME}},
                 ]})
@@ -375,8 +378,9 @@ module.exports.filteringFinanciamento = async (req, res, next) => {
                 .exec()
 
                 res.status(200).send(result)
+
             }
-            if(!DT_VEN && !DT_VEN_F && !NOME){
+            if(!DT_VEN && !DT_VEN_F && !NOME){ //!ok
                 res.status(200).json({"warning": "Nenhum filtro encontrado"})
             }
 
@@ -406,6 +410,70 @@ module.exports.gettingAllDataContaCorrente = (req, res, next) => {
             res.send(err)
             res.status(400).json({error: err})
         }
+    }else{
+        res.status(404).send("Database nao encontrada")
+    }
+}
+
+module.exports.filteringContaCorrente = async (req, res, next) => {
+    res.setHeader("content-type", "application/json");
+    if(db()){
+        
+        try{
+            const iniDate = req.query.iniDate;
+            const finDate = req.query.finDate;
+            const conta = req.query.conta;
+            const deb_cre = req.query.deb_cre;
+
+            if(iniDate && finDate && conta){//!OK
+                const result = await contaCorrenteModel
+                .find({$and: [
+                    {DT_LAN: {$gte: iniDate}},
+                    {DT_LAN: {$lte: finDate}},
+                    {NCONTA: {$eq: conta}},
+                    {DEB_CRE: {$eq: deb_cre}}
+                ]})
+                .sort({DT_LAN: -1})
+                .exec()
+
+                res.status(200).send(result)
+            }
+
+            if(!iniDate && !finDate && conta){
+
+                const result = await contaCorrenteModel
+                .find({$and: [
+                    {NCONTA: {$eq: conta}},
+                    {DEB_CRE: {$eq: deb_cre}}
+                ]})
+                .sort({DT_LAN: -1})
+                .exec()
+
+                res.status(200).send(result)
+
+            }
+
+            if(iniDate && finDate && !conta){
+                const result = await contaCorrenteModel
+                .find({$and: [
+                    {DT_LAN: {$gte: iniDate}},
+                    {DT_LAN: {$lte: finDate}},
+                    {DEB_CRE: {$eq: deb_cre}}
+                ]})
+                .sort({DT_LAN: -1})
+                .exec()
+
+                res.status(200).send(result)
+            }
+            console.log(iniDate, finDate, conta, deb_cre)
+
+            // res.send({"teste": "guizaodozap"})
+
+        }catch(err){
+            res.send(err)
+            res.status(200).json({error: err})
+        }
+
     }else{
         res.status(404).send("Database nao encontrada")
     }
