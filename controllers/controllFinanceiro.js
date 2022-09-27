@@ -399,13 +399,17 @@ module.exports.filteringFinanciamento = async (req, res, next) => {
 }
 
 
-module.exports.gettingAllDataContaCorrente = (req, res, next) => {
+module.exports.gettingAllDataContaCorrente = async (req, res, next) => {
     res.setHeader("content-type", "application/json")
     if(db()){
         try{
-            contaCorrenteModel.find({}, (err, data)=>{
-                res.status(200).send(data)
-            })
+
+            // group by account
+            const result = await contaCorrenteModel
+            .aggregate()
+            .group({_id: "$NCONTA"})
+
+            res.status(200).send(result)
         }catch(err){
             res.send(err)
             res.status(400).json({error: err})
