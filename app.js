@@ -32,7 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
   
 // }, 3000000); // executa a cada uma hora
 
-periodicFunc.conexaoDB()
+// periodicFunc.conexaoDB()
 
 
 // default

@@ -8,13 +8,15 @@ const db = require('../models/connetion')
 
 // chamando todos os dados
 // é necessário abrir conexao antes
-module.exports.gettingAllDataContasPagar = (req, res, next) => {
+module.exports.gettingAllDataContasPagar = async (req, res, next) => {
     res.setHeader("Content-Type", "application/json");
     if(db()){
         try{
-            contasPagarModel.find({}, (err, data)=>{
-                res.status(200).send(data)
-            })
+            const result = await contasPagarModel
+            .aggregate()
+            .group({_id: "$Atividade"})
+            
+            res.status(200).send(result)
           }catch(err){
             res.send(err);
             res.status(400).json({error: err});
@@ -36,9 +38,11 @@ module.exports.gettingContasPagarByData = async (req, res, next) => {
                 [
                     {Data_de_vencimento: {$gte: dateNow}},
 
-                ]}).sort({Data_de_vencimento: 1})
+                ]})
+                .sort({Data_de_vencimento: 1})
                 .where("Situacao_Pagar == Aberto")
-                .limit(10).exec();
+                .limit(10)
+                .exec();
 
             res.status(200).send(result)
         }catch(err){
@@ -151,16 +155,17 @@ module.exports.filteringContasPagar = async (req, res) => {
 }
 
 // contas a receber queries
-module.exports.gettingAllDataContaReceber = (req, res, next) => {
+module.exports.gettingAllDataContaReceber = async (req, res, next) => {
     res.setHeader("content-type", "application/json")
     if(db()){
 
         try{
 
-            contaReceberModel.find({}, (err, data) => {
-                res.status(200).send(data)
-            })
+            const result = await contaReceberModel
+            .aggregate()
+            .group({_id: "$Atividade"})
             
+            res.status(200).send(result)
         }catch(err){
 
             res.send(err)
