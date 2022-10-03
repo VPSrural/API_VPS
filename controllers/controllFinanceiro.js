@@ -310,14 +310,18 @@ module.exports.filteringContasReceber = async (req, res) => {
 }
 
 // financiamento
-module.exports.gettingAllDataFinanciamento = (req, res, next) => {
+module.exports.gettingAllDataFinanciamento = async (req, res, next) => {
     res.setHeader("content-type", "application/json")
     if(db()){
 
         try{
-            financiamentoModel.find({}, (err, data)=>{
-                res.status(200).send(data)
-            })
+            
+            const result = await financiamentoModel
+            .aggregate()
+            .group({_id: "$NOME"})
+            
+            res.status(200).send(result)
+
         }catch(err){
             res.send(err)
             res.status(400).json({error: err})
