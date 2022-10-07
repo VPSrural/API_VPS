@@ -76,3 +76,45 @@ module.exports.creatingUser = async (req, res) => {
         res.status(404).json({error: "Database não encontrada"})
     }
 }
+
+module.exports.updatingUser = async (req, res) => {
+    res.setHeader("Content-type", "application/json")
+    if(db()){
+        try{
+            const userId = req.params.id
+            const updating = await userModel.findByIdAndUpdate(userId, {ativo: true})
+            if(updating){
+                res.status(200).send({sucesso: "atualizado com sucesso"})
+            }else{
+                res.status(400).send({error: "erro ao atualizar"})
+            }
+        }catch(err){
+            res.status(400).json({error: err})
+        }
+    }else{
+        res.status(404).json({error: "Database não encontrada"})
+    }
+}
+
+module.exports.deleteUser = (req, res) => {
+    res.setHeader("Content-type", "application/json")
+    if(db()){
+        try{
+            const userId = req.params.id
+            userModel.findByIdAndDelete(userId, (err, docs)=>{
+                if(err){
+                    res.status(400).send({error: err})
+                    return
+                }
+
+                res.status(200).send({success: "Removido com sucesso"})
+            })
+            
+        }catch(err){
+            res.status(400).json({error: err})
+        }
+    }else{
+        res.status(404).json({error: "Database não encontrada"})
+    }
+}
+

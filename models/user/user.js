@@ -6,7 +6,7 @@ const user = mongoose.Schema({
     idCompany: mongoose.ObjectId,
     login: {type: String, required: true},
     password: {type: String, required: true},
-    ativo: {type: Boolean, default: true},
+    ativo: {type: Boolean, default: false},
     token: {type: String},
 },
 {
