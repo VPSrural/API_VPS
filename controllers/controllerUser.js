@@ -25,6 +25,7 @@ module.exports.getUser = async (req, res) => {
     }
 }
 
+// we need to set return after send something to the client
 module.exports.creatingUser = async (req, res) => {
     res.setHeader("Content-type", "application/json")
     if(db()){
@@ -37,6 +38,7 @@ module.exports.creatingUser = async (req, res) => {
             // force error if the require fields weren't setted
             if(!(login && password && idAlpha)){
                 res.status(400).send("Login, password e idAlpha sao requeridos")
+                return
             }
 
             const verifyUser = await userModel.findOne({login})
@@ -44,6 +46,7 @@ module.exports.creatingUser = async (req, res) => {
             // verify user
             if(verifyUser){
                 res.status(409).send({error: "usuario ja existe"})
+                return
             }
             
             const userToInsert = await userModel.create({
@@ -62,8 +65,6 @@ module.exports.creatingUser = async (req, res) => {
             // inserting token to user save
             // the token doesn't go to the DB
             userToInsert.token = token
-
-            console.log(idAlpha, login, password)
 
             res.status(200).send(userToInsert)
         }catch(err){

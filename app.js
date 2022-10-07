@@ -6,6 +6,7 @@ const logger = require('morgan');
 require('dotenv').config()
 const bodyParser = require('body-parser')
 const periodicFunc = require('./periodicFunctionSQL')
+const auth = require('./middlewares/auth')
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // periodicFunc.conexaoDB()
 
 // default
+
 app.use('/api/v1', defaultt);
 
 //encaminhando para rotas
