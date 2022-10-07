@@ -13,6 +13,7 @@ const app = express();
 // var indexRouter = require('./routes/index');
 const defaultt = require('./routes/default')
 const financeiro = require('./routes/financeiro');
+const user = require('./routes/user')
 
 // midllewares
 app.use(logger('dev'));
@@ -21,7 +22,6 @@ app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 /*
  * Funcao para buscar os dados do sql server
@@ -34,14 +34,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // periodicFunc.conexaoDB()
 
-
 // default
 app.use('/api/v1', defaultt);
 
-
 //encaminhando para rotas
 app.use('/api/v1', financeiro);
-
+app.use('/api/v1', user)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
