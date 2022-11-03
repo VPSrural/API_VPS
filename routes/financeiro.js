@@ -16,14 +16,17 @@ router.post('/financeiro/contasPagar', controllerFin.insertingDataContasPagar)
 router.get('/financeiro/contaReceber', controllerFin.gettingAllDataContaReceber)
 router.get('/financeiro/contasReceberTwenty', controllerFin.gettingContasReceberByTwenty)
 router.get('/financeiro/contasReceberFiltered', controllerFin.filteringContasReceber)
+router.post('/financeiro/contaReceber', controllerFin.insertingDataContasReceber)
 
 /* FINANCIAMENTO */
 router.get('/financeiro/financiamento', controllerFin.gettingAllDataFinanciamento)
 router.get('/financeiro/financiamentoFiltered', controllerFin.filteringFinanciamento)
+router.post('/financeiro/financiamento', controllerFin.insertingDataFinanciamento)
 
 /* CONTA CORRENTE */
 //ok
 router.get('/financeiro/contaCorrente', controllerFin.gettingAllDataContaCorrente)
 router.get('/financeiro/contaCorrenteFiltered', controllerFin.filteringContaCorrente)
+router.post('/financeiro/contaCorrente', controllerFin.insertingDataContaCorrente)
 
 module.exports = router;
