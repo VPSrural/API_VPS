@@ -27,44 +27,6 @@ module.exports.gettingAllDataContasPagar = async (req, res, next) => {
     
 }
 
-// para atualizar precisa apenas passar o _id
-// caso nao passe ele ja insere direto
-module.exports.insertingDataContasPagar = async (req, res, next) => {
-    res.setHeader("Content-Type", "application/json")
-    if(db()){
-        const dataToInsert = req.body;
-        if(dataToInsert._id){
-            if(updatingDataContasPagar(dataToInsert)){
-                res.status(200).json({message: "Atualizado com sucesso!!"})
-            }else{
-                res.status(200).json({message: "houve erro na alteração do documento!!"})
-            }
-        }else{
-            contasPagarModel.insertMany(dataToInsert, (err, docs) => {
-                if(!err){
-                    res.status(200).json({message: "Inserido com sucesso!!"})
-                }else{
-                    res.status(400).json({message: "Dados nao foram inseridos!!"})
-                }
-            })
-        }
-    }
-}
-
-const updatingDataContasPagar = async (objectToUpdate) => {
-    contasPagarModel.findByIdAndUpdate(objectToUpdate._id, {
-        Valor: objectToUpdate.Valor,
-        Data_de_vencimento: objectToUpdate.Data_de_vencimento,
-        Atividade: objectToUpdate.Atividade,
-        NOME: objectToUpdate.NOME,
-        Financiamento: objectToUpdate.Financiamento,
-        Situacao_Pagar: objectToUpdate.Situacao_Pagar,
-    }, (err, docs) => {
-        if(!err) return true
-        if(err) return false
-    })
-}
-
 //constas a pagar ordenada por data
 module.exports.gettingContasPagarByData = async (req, res, next) => {
     res.setHeader("Content-Type", "application/json");
@@ -191,6 +153,48 @@ module.exports.filteringContasPagar = async (req, res) => {
         }
     }
 }
+
+// para atualizar precisa apenas passar o _id
+// caso nao passe ele ja insere direto
+module.exports.insertingDataContasPagar = async (req, res, next) => {
+    res.setHeader("Content-Type", "application/json")
+    if(db()){
+        const dataToInsert = req.body;
+        dataToInsert.map((item, index)=>{
+            if(item._id){
+                if(updatingDataContasPagar(item)){
+                    res.status(200).json({message: "Atualizado com sucesso!!"})
+                }else{
+                    res.status(200).json({message: "houve erro na alteração do documento!!"})
+                }
+            }else{
+                contasPagarModel.insertMany(item, (err, docs) => {
+                    if(!err){
+                        res.status(200).json({message: "Inserido com sucesso!!"})
+                    }else{
+                        res.status(400).json({message: "Dados nao foram inseridos!!"})
+                    }
+                })
+            }
+        })
+
+    }
+}
+
+const updatingDataContasPagar = async (objectToUpdate) => {
+    contasPagarModel.findByIdAndUpdate(objectToUpdate._id, {
+        Valor: objectToUpdate.Valor,
+        Data_de_vencimento: objectToUpdate.Data_de_vencimento,
+        Atividade: objectToUpdate.Atividade,
+        NOME: objectToUpdate.NOME,
+        Financiamento: objectToUpdate.Financiamento,
+        Situacao_Pagar: objectToUpdate.Situacao_Pagar,
+    }, (err, docs) => {
+        if(!err) return true
+        if(err) return false
+    })
+}
+
 
 // contas a receber queries
 module.exports.gettingAllDataContaReceber = async (req, res, next) => {
@@ -351,21 +355,23 @@ module.exports.insertingDataContasReceber = async (req, res, next) => {
     res.setHeader("Content-Type", "application/json")
     if(db()){
         const dataToInsert = req.body;
-        if(dataToInsert._id){
-            if(updatingDataContasReceber(dataToInsert)){
-                res.status(200).json({message: "Atualizado com sucesso!!"})
-            }else{
-                res.status(200).json({message: "houve erro na alteração do documento!!"})
-            }
-        }else{
-            contaReceberModel.insertMany(dataToInsert, (err, docs) => {
-                if(!err){
-                    res.status(200).json({message: "Inserido com sucesso!!"})
+        dataToInsert.map((item, index)=>{
+            if(item._id){
+                if(updatingDataContasReceber(item)){
+                    res.status(200).json({message: "Atualizado com sucesso!!"})
                 }else{
-                    res.status(400).json({message: "Dados nao foram inseridos!!"})
+                    res.status(200).json({message: "houve erro na alteração do documento!!"})
                 }
-            })
-        }
+            }else{
+                contaReceberModel.insertMany(item, (err, docs) => {
+                    if(!err){
+                        res.status(200).json({message: "Inserido com sucesso!!"})
+                    }else{
+                        res.status(400).json({message: "Dados nao foram inseridos!!"})
+                    }
+                })
+            }
+        })
     }
 }
 
@@ -487,21 +493,24 @@ module.exports.insertingDataFinanciamento = async (req, res, next) => {
     res.setHeader("Content-Type", "application/json")
     if(db()){
         const dataToInsert = req.body;
-        if(dataToInsert._id){
-            if(updatingDataFinanciamento(dataToInsert)){
-                res.status(200).json({message: "Atualizado com sucesso!!"})
-            }else{
-                res.status(200).json({message: "houve erro na alteração do documento!!"})
-            }
-        }else{
-            financiamentoModel.insertMany(dataToInsert, (err, docs) => {
-                if(!err){
-                    res.status(200).json({message: "Inserido com sucesso!!"})
+        dataToInsert.map((item, index)=>{
+            if(item._id){
+                if(updatingDataFinanciamento(item)){
+                    res.status(200).json({message: "Atualizado com sucesso!!"})
                 }else{
-                    res.status(400).json({message: "Dados nao foram inseridos!!"})
+                    res.status(200).json({message: "houve erro na alteração do documento!!"})
                 }
-            })
-        }
+            }else{
+                financiamentoModel.insertMany(item, (err, docs) => {
+                    if(!err){
+                        res.status(200).json({message: "Inserido com sucesso!!"})
+                    }else{
+                        res.status(400).json({message: "Dados nao foram inseridos!!"})
+                    }
+                })
+            }
+        })
+
     }
 }
 
@@ -608,25 +617,28 @@ module.exports.insertingDataContaCorrente = async (req, res, next) => {
     res.setHeader("Content-Type", "application/json")
     if(db()){
         const dataToInsert = req.body;
-        if(dataToInsert._id){
-            if(updatingDataContaCorrente(dataToInsert)){
-                res.status(200).json({message: "Atualizado com sucesso!!"})
-            }else{
-                res.status(200).json({message: "houve erro na alteração do documento!!"})
-            }
-        }else{
-            contaCorrenteModel.insertMany(dataToInsert, (err, docs) => {
-                if(!err){
-                    res.status(200).json({message: "Inserido com sucesso!!"})
+        dataToInsert.map((item, index) => {
+            if(item._id){
+                if(updatingDataContaCorrente(item)){
+                    console.log("atualizado com sucesso!!")
                 }else{
-                    res.status(400).json({message: "Dados nao foram inseridos!!"})
+                    console.log("houve erro na alteração!!")
                 }
-            })
-        }
+            }else{
+                contaCorrenteModel.insertMany(item, (err, docs) => {
+                    if(!err){
+                        console.log("Inserido com sucesso!!")
+                    }else{
+                        console.log("Dados não foram inseridos!!")
+                    }
+                })
+            }
+        })
+        res.status(200).json({message: "sincronização feita!!"})
     }
 }
 
-const updatingDataContaCorrente = async (objectToUpdate) => {
+const updatingDataContaCorrente = (objectToUpdate) => {
     contaCorrenteModel.findByIdAndUpdate(objectToUpdate._id, {
         NSITUACAO: objectToUpdate.NSITUACAO,
         SITUACAO: objectToUpdate.SITUACAO,
