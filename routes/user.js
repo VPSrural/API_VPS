@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const userController = require("../controllers/controllerUser") 
+const userController = require("../controllers/user/controllerUser") 
 const auth = require("../middlewares/auth.js")
 
 // using jwt authentication in this route

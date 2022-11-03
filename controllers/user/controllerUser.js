@@ -1,6 +1,6 @@
 const express = require('express')
-const db = require('../models/connetion') // connection environment
-const userModel = require('../models/user/user')
+const db = require('../../models/connetion') // connection environment
+const userModel = require('../../models/user/user')
 const md5 = require('md5')
 const jwt = require('jsonwebtoken')
 
