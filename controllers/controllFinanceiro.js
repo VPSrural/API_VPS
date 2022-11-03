@@ -27,6 +27,25 @@ module.exports.gettingAllDataContasPagar = async (req, res, next) => {
     
 }
 
+module.exports.insertingDataContasPagar = async (req, res, next) => {
+    res.setHeader("Content-Type", "application/json")
+    if(db()){
+        const dataToInsert = req.body;
+        if(dataToInsert._id){
+            res.status(200).json({message: "atualizando aqui"})
+        }else{
+            contasPagarModel.insertMany(dataToInsert, (err, docs) => {
+                if(!err){
+                    res.status(200).json({message: "Inserido com sucesso!!"})
+                }else{
+                    res.status(400).json({message: "Dados nao foram inseridos!!"})
+                }
+            })
+        }
+    }
+}
+
+
 //constas a pagar ordenada por data
 module.exports.gettingContasPagarByData = async (req, res, next) => {
     res.setHeader("Content-Type", "application/json");
@@ -62,14 +81,14 @@ module.exports.filteringContasPagar = async (req, res) => {
             const initialDate = req.query.iniDate;
             const finalDate = req.query.finalDate;
             const fornecedor = req.query.cliente;
-
+            console.log(fornecedor)
             if(atividade && initialDate && finalDate && fornecedor){//!ok
 
                 
                 const resultAll = await contasPagarModel
                 .find({$and: [
                     {Atividade: {$eq: atividade}},
-                    {cliente: {$eq: fornecedor}},
+                    {NOME: {$eq: fornecedor}},
                     {Data_de_vencimento: {$gte: initialDate}},
                     {Data_de_vencimento: {$lte: new Date(`${finalDate}`)}}
                 ]})
@@ -136,7 +155,7 @@ module.exports.filteringContasPagar = async (req, res) => {
                                 
                 const resultFinalDate = await contasPagarModel
                 .find({$and: [
-                    {cliente: {$eq: fornecedor}},
+                    {NOME: {$eq: fornecedor}},
                 ]})
                 .where({Situacao_Pagar: "Aberto"})
                 .sort({Data_de_vencimento: -1})

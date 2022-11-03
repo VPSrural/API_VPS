@@ -8,6 +8,8 @@ const controllerFin = require('../controllers/controllFinanceiro')
 router.get('/financeiro/contasPagar', controllerFin.gettingAllDataContasPagar)
 router.get('/financeiro/contasPagarTwenty', controllerFin.gettingContasPagarByData)
 router.get('/financeiro/contasPagarFiltered', controllerFin.filteringContasPagar)
+router.post('/financeiro/contasPagar', controllerFin.insertingDataContasPagar)
+
 
 /* CONTAS A RECEBER */
 //ok

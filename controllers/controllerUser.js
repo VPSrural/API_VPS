@@ -45,7 +45,7 @@ module.exports.creatingUser = async (req, res) => {
             
             // verify user
             if(verifyUser){
-                res.status(409).send({error: "usuario ja existe"})
+                res.status(409).send({error: "usuario já existe"})
                 return
             }
             
