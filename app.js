@@ -15,6 +15,7 @@ const app = express();
 const defaultt = require('./routes/default')
 const financeiro = require('./routes/financeiro');
 const user = require('./routes/user')
+const admin = require('./routes/admin')
 
 // midllewares
 app.use(logger('dev'));
@@ -42,6 +43,7 @@ app.use('/api/v1', defaultt);
 //encaminhando para rotas
 app.use('/api/v1', financeiro);
 app.use('/api/v1', user)
+app.use('/api/v1', admin)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
