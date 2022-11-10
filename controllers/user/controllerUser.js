@@ -37,7 +37,7 @@ module.exports.creatingUser = async (req, res) => {
 
             // force error if the require fields weren't setted
             if(!(login && password && idAlpha)){
-                res.status(400).send("Login, password e idAlpha sao requeridos")
+                res.status(400).json({message: "Login, password e idAlpha sao requeridos"})
                 return
             }
 

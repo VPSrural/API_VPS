@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const userController = require("../controllers/user/controllerUser") 
-const auth = require("../middlewares/auth.js")
+const auth = require("../middlewares/authUser.js")
 
 // using jwt authentication in this route
 // we send a token to user and save in asyncStorage

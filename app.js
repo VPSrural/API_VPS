@@ -6,7 +6,7 @@ const logger = require('morgan');
 require('dotenv').config()
 const bodyParser = require('body-parser')
 const periodicFunc = require('./periodicFunctionSQL')
-const auth = require('./middlewares/auth')
+const auth = require('./middlewares/authUser')
 
 const app = express();
 
