@@ -7,8 +7,11 @@ require('dotenv').config()
 const bodyParser = require('body-parser')
 const periodicFunc = require('./periodicFunctionSQL')
 const auth = require('./middlewares/authUser')
+const cors = require('cors')
 
 const app = express();
+
+
 
 //rotas
 // var indexRouter = require('./routes/index');
@@ -24,6 +27,8 @@ app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+// config CORS
+app.use(cors())
 
 /*
  * Funcao para buscar os dados do sql server

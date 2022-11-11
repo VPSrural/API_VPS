@@ -96,12 +96,12 @@ module.exports.updatingUser = async (req, res) => {
     }
 }
 
-module.exports.deleteUser = (req, res) => {
+module.exports.deleteUser = async (req, res) => {
     res.setHeader("Content-type", "application/json")
     if(db()){
         try{
             const userId = req.params.id
-            userModel.findByIdAndDelete(userId, (err, docs)=>{
+            await userModel.findByIdAndDelete(userId, (err, docs)=>{
                 if(err){
                     res.status(400).send({error: err})
                     return
